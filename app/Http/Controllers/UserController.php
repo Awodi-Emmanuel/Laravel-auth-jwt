@@ -1,10 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+
+
 
 class UserController extends Controller
 {
@@ -24,7 +29,28 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function login(){
-        
+    public function login(Request $request){
+
+        if (!Auth::attempt($request->only('email', 'password'))){
+
+            return response([
+                'message' => 'Invalid credential'
+            ], Response::HTTP_UNAUTHORIZED);
+
+        }
+        $user = Auth::User();
+
+        $token = $user->createToken('token')->plainTextToken;
+
+        $cookie = cookie('jwt', $token, 60 * 24); // 1 day
+        return response([
+            'message' => 'success'
+        ])->withCookie($cookie);
+
+    }
+
+    public function user(){
+        $user = Auth::user();
+        return $user;
     }
 }
