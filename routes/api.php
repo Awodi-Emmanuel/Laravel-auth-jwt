@@ -19,7 +19,7 @@ use App\Http\Controllers\UserController;
 Route::post('register', [UserController::class, 'signup']);
 Route::post('login', [UserController::class, 'login']);
 
-Route::get('user', [UserController::class, 'index']);
+// Route::get('user', [UserController::class, 'index']);
 
 
 
